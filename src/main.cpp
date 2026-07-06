@@ -69,7 +69,7 @@ void SelectEntertainmentGroup(std::shared_ptr<huestream::HueStream> aHuestream) 
         std::cout << groups->at(i)->GetName() << std::endl;
     }
 
-    std::cout << "Pick a group:";
+    std::cout << "Pick a group: ";
     std::cin >> chosenIndex;
     std::cin.ignore(INT8_MAX, '\n');
     if (chosenIndex < 0 || chosenIndex >= groupsCount) {
