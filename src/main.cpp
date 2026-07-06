@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+void SelectEntertainmentGroup(std::shared_ptr<huestream::HueStream> aHuestream);
+
 int main() {    
     const std::string applicationName{"Lighting-Effects"};
     const std::string deviceName{"COLLIN-SPECTRE"};
@@ -24,12 +26,12 @@ int main() {
     });
 
     huestream->ConnectBridge();
+    SelectEntertainmentGroup(huestream); // Can be commented out if you don't want to change the group
 
-    
     while (!(huestream->IsStreamableBridgeLoaded() || huestream->IsBridgeStreaming())) {
         auto bridge = huestream->GetLoadedBridge();
         if (bridge->GetStatus() == huestream::BridgeStatus::BRIDGE_INVALID_GROUP_SELECTED) {
-            huestream->SelectGroup(bridge->GetGroups()->at(0));
+            SelectEntertainmentGroup(huestream);
         } else {
             std::cout << ("Press Enter to retry...");
             std::cin.get();
@@ -55,4 +57,23 @@ int main() {
     huestream->ShutDown();
 
     return 0;
+}
+
+void SelectEntertainmentGroup(std::shared_ptr<huestream::HueStream> aHuestream) {
+    const auto groups = aHuestream->GetLoadedBridge()->GetGroups();
+    std::cout << "Entertainment Groups" << std::endl;
+    const auto groupsCount = groups->size();
+    for (int i{0}; i < groupsCount; i++) {
+        std::cout << i << ": ";
+        std::cout << groups->at(i)->GetName() << std::endl;
+    }
+    std::cout << "Pick a group:";
+    int chosenIndex{0};
+    std::cin >> chosenIndex;
+    std::cin.ignore(INT8_MAX, '\n');
+    if (chosenIndex < 0 || chosenIndex >= groupsCount) {
+        std::cout << "Invalid option. Got " << chosenIndex << std::endl;
+        std::cout << "Defaulting to 0." << std::endl;
+    }
+    aHuestream->SelectGroup(groups->at(chosenIndex));
 }
