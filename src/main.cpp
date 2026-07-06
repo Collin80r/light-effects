@@ -61,19 +61,21 @@ int main() {
 
 void SelectEntertainmentGroup(std::shared_ptr<huestream::HueStream> aHuestream) {
     const auto groups = aHuestream->GetLoadedBridge()->GetGroups();
+    int chosenIndex{0};
     std::cout << "Entertainment Groups" << std::endl;
     const auto groupsCount = groups->size();
     for (int i{0}; i < groupsCount; i++) {
         std::cout << i << ": ";
         std::cout << groups->at(i)->GetName() << std::endl;
     }
+
     std::cout << "Pick a group:";
-    int chosenIndex{0};
     std::cin >> chosenIndex;
     std::cin.ignore(INT8_MAX, '\n');
     if (chosenIndex < 0 || chosenIndex >= groupsCount) {
         std::cout << "Invalid option. Got " << chosenIndex << std::endl;
         std::cout << "Defaulting to 0." << std::endl;
     }
+    
     aHuestream->SelectGroup(groups->at(chosenIndex));
 }
